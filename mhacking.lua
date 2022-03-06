@@ -3,7 +3,7 @@ showHelp = false
 helpTimer = 0
 helpCycle = 4000
 
-Citizen.CreateThread(function()
+--[[Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(0)
 		if showHelp then
@@ -21,7 +21,7 @@ Citizen.CreateThread(function()
 			end
 		end
 	end
-end)
+end)]]
 
 function showHelpText(s)
 	SetTextComponentFormat("STRING")
@@ -52,6 +52,23 @@ AddEventHandler('mhacking:start', function(solutionlength, duration, callback)
 	nuiMsg.start = true
 	SendNUIMessage(nuiMsg)
 	showHelp = true
+	while showHelp do
+		Citizen.Wait(0)
+		if showHelp then
+			if helpTimer > GetGameTimer() then
+				showHelpText("Navigate with ~y~W,A,S,D~s~ and confirm with ~y~SPACE~s~ for the left code block.")
+			elseif helpTimer > GetGameTimer()-helpCycle then
+				showHelpText("Use the ~y~Arrow Keys~s~ and ~y~ENTER~s~ for the right code block")
+			else
+				helpTimer = GetGameTimer()+helpCycle
+			end
+			if IsEntityDead(PlayerPedId()) then
+				nuiMsg = {}
+				nuiMsg.fail = true
+				SendNUIMessage(nuiMsg)
+			end
+		end
+	end
 end)
 
 AddEventHandler('mhacking:setmessage', function(msg)
